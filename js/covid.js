@@ -19,13 +19,14 @@ $("#label").change(function () {
 });
 
 function drawCurrentConfiguration() {
+	$("#spinner").show()
 	drawChart(getSeriesFromData($("#continent").val(), $("#dimension").val()));
 }
 
 var data;
 $.getJSON("data.json", function (_data) {
 	data = _data;
-	drawChart(getSeriesFromData("World", "Cumulative_number_for_14_days_of_COVID-19_cases_per_100000"));
+	drawCurrentConfiguration();
 });
 
 
@@ -78,9 +79,6 @@ function getSeriesFromData(continent, dimension) {
 		}
 
 		var last_value = parseInt(last_element.y);
-		console.log(country);
-		console.log(countrySeriesData)
-		console.log(min_value, max_value, last_value);
 
 		if (min_value == 0 && max_value == 0) {
 			return result;
@@ -113,8 +111,6 @@ function getSeriesFromData(continent, dimension) {
 			series.push(serie);
 		}
 	})
-	console.log(series);
-
 	return series;
 
 }
@@ -122,8 +118,10 @@ function getSeriesFromData(continent, dimension) {
 
 function drawChart(series) {
 
-	Highcharts.chart('container', {
-
+	Highcharts.chart('chart', {
+		chart: {
+			zoomType: 'x'
+		},
 		title: {
 			text: 'COVID19 ECDC numbers'
 		},
@@ -174,6 +172,9 @@ function drawChart(series) {
 		}
 
 	});
+
+	$("#spinner").hide()
+
 }
 
 

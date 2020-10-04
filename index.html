@@ -20,8 +20,8 @@
 		<figure class="highcharts-figure">
 
 			<select id="continent" name="continent">
-				<option selected="1" value="World">World</option>
-				<option value="Europe">Europe</option>
+				<option value="World">World</option>
+				<option selected="1" value="Europe">Europe</option>
 				<option value="Asia">Asia</option>
 				<option value="Africa">Africa</option>
 				<option value="America">America</option>
@@ -50,7 +50,13 @@
 			<input type="number" id="max" name="max" min="0" max="2000" value=0>
 
 
-			<div id="container" style="height: 500px"></div>
+			<div class="d-flex justify-content-center">
+				<div id="spinner" class="spinner-border" role="status">
+					<span class="sr-only">Loading...</span>
+				</div>
+			</div>
+
+			<div id="chart" style="height: 500px"></div>
 
 			<p class="pull-left">
 				Source: <a target="_blank"
