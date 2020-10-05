@@ -14,6 +14,15 @@ $("#max").change(function () {
 	drawCurrentConfiguration();
 });
 
+$("#popMin").change(function () {
+	drawCurrentConfiguration();
+});
+
+$("#popMax").change(function () {
+	drawCurrentConfiguration();
+});
+
+
 $("#label").change(function () {
 	drawCurrentConfiguration();
 });
@@ -23,9 +32,44 @@ function drawCurrentConfiguration() {
 	drawChart(getSeriesFromData($("#continent").val(), $("#dimension").val()));
 }
 
+function round(number) {
+	return parseInt(number * 1000) / 1000.0;
+}
+
 var data;
 $.getJSON("data.json", function (_data) {
 	data = _data;
+	var cumulatedCases = 0;
+	var cumulatedDeaths = 0;
+	var currentCountry = null;
+	data.records.reverse().forEach(function (r) {
+
+		if (currentCountry == null) {
+			currentCountry = r.countriesAndTerritories;
+		} else if (currentCountry !== r.countriesAndTerritories) {
+			cumulatedCases = 0;
+			cumulatedDeaths = 0;
+			currentCountry = r.countriesAndTerritories;
+		}
+
+		if (r.cases != null && parseInt(r.cases) > 0) {
+			cumulatedCases += parseInt(r.cases);
+		}
+		if (r.deaths != null && parseInt(r.deaths) > 0) {
+			cumulatedDeaths += parseInt(r.deaths);
+		}
+
+		r.cumulatedCases = cumulatedCases;
+		r.cumulatedDeaths = cumulatedDeaths;
+		r.cumulatedDeathsBy1000 = round((cumulatedDeaths / parseInt(r.popData2019)) * 1000);
+		r.cumulatedCasesBy1000 = round((cumulatedCases / parseInt(r.popData2019)) * 1000);
+		r["Cumulative_number_for_14_days_of_COVID-19_cases_per_100000"] = round(r["Cumulative_number_for_14_days_of_COVID-19_cases_per_100000"]);
+		if (cumulatedCases > 0) {
+			r.cumulatedCasesBycumulatedDeaths = round(cumulatedDeaths / cumulatedCases);
+		}
+
+
+	})
 	drawCurrentConfiguration();
 });
 
@@ -36,7 +80,7 @@ function getSeriesFromData(continent, dimension) {
 	var countries = _.uniq(countries_filtered_by_continent.map(d => d.countriesAndTerritories));
 	var x_series = [];
 	var current_date = moment("2020-03-01");
-	while (moment().isAfter(current_date)) {
+	while (moment().add(1, "day").isAfter(current_date)) {
 		x_series.push(current_date.add(1, "day").format("DD/MM/YYYY"));
 	}
 
@@ -44,23 +88,43 @@ function getSeriesFromData(continent, dimension) {
 
 		var filter_label = $("#label").val();
 		if (filter_label != null && filter_label.length > 1) {
-			if (!country.toLowerCase().match(new RegExp(filter_label.replace(/\W+/g, "|")))) {
+			if (!country.toLowerCase().match(new RegExp(filter_label.toLowerCase().replace(/\W+/g, "|")))) {
 				return null;
 			}
 		}
 
-		var dataCountry1 = data.records.filter(r => r.countriesAndTerritories == country);
+		var dataCountry1 = data.records.filter(r => r.countriesAndTerritories.toLowerCase() == country.toLowerCase());
+		var pop_min = parseInt($("#popMin").val()) * 1000000;
+		var pop_max = parseInt($("#popMax").val()) * 1000000;
+		var pop_value = parseFloat(dataCountry1[0].popData2019);
+		if (pop_min != 0 || pop_max != 0) {
+			if (pop_value == null) return null;
+			//no max, but a min
+			if ((pop_max == 0 || !pop_max) && pop_min > 0 && pop_value < pop_min) {
+				return null;
+			}
+			//no min, but a max
+			if ((pop_min == 0 || !pop_min) && pop_max > 0 && pop_value > pop_max) {
+				return null;
+			}
+			//max and min
+			if ((pop_max > 0 && pop_value > pop_max) || (pop_min > 0 && pop_value < pop_min)) {
+				return null;
+			}
+		}
+
+
 		var countrySeriesData = [];
 		x_series.forEach(function (xs) {
 			var point = null;
 			dataCountry1.forEach(function (d) {
 				if (d.dateRep == xs) {
-					point = parseInt(d[key])
+					point = parseFloat(d[key])
 				}
 			})
 			if (point != null && point >= 0)
 				countrySeriesData.push({
-					x: moment(xs, "DD/MM/YYYY").valueOf(),
+					x: moment(xs + " 12:00:00", "DD/MM/YYYY hh:mm:ss").valueOf(),
 					y: point
 				})
 		})
@@ -72,14 +136,14 @@ function getSeriesFromData(continent, dimension) {
 
 		var min_value = parseInt($("#min").val());
 		var max_value = parseInt($("#max").val());
+
 		var last_element = countrySeriesData[countrySeriesData.length - 1];
 		if (!last_element) {
 			console.log("Could not find country " + country)
 			return null;
 		}
 
-		var last_value = parseInt(last_element.y);
-
+		var last_value = parseFloat(last_element.y);
 		if (min_value == 0 && max_value == 0) {
 			return result;
 		} else {
@@ -97,14 +161,10 @@ function getSeriesFromData(continent, dimension) {
 			}
 
 			return null;
-
 		}
 	}
 
 	var series = [];
-	//var dimension = "cases";
-	//var dimension = "deaths";
-
 	countries.forEach(function (country) {
 		var serie = getDataFor(country, dimension);
 		if (serie !== null) {
@@ -119,6 +179,9 @@ function getSeriesFromData(continent, dimension) {
 function drawChart(series) {
 
 	Highcharts.chart('chart', {
+		rangeSelector: {
+			selected: 1
+		},
 		chart: {
 			zoomType: 'x'
 		},
@@ -126,11 +189,7 @@ function drawChart(series) {
 			text: 'COVID19 ECDC numbers'
 		},
 		xAxis: {
-
 			type: 'datetime'
-			/*,
-						min: moment("2020-03-01").valueOf(),
-						max: moment().valueOf()*/
 		},
 		yAxis: {
 			//type: 'logarithmic',

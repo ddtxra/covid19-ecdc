@@ -2,6 +2,7 @@
 	<title>COVID19 charts (cumulative cases, death and cases) based on ECDC numbers</title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
 		integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+	<script src="js/highstock.js"></script>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/lodash.min.js"></script>
 	<script src="js/moment.min.js"></script>
@@ -37,17 +38,34 @@
 					100'000</option>
 				<option value="deaths">deaths</option>
 				<option value="cases">cases</option>
+				<option value="cumulatedCases">Cumulative cases</option>
+				<option value="cumulatedDeaths">Cumulative deaths</option>
+				<option value="cumulatedCasesBy1000">Cumulative cases per 1000 habitants</option>
+				<option value="cumulatedDeathsBy1000">Cumulative deaths per 1000 habitants</option>
+				<option value="cumulatedCasesBycumulatedDeaths">Cumulative deaths / Cumulative cases</option>
+
 			</select>
+
+
+			<br>
 
 			<label for="label">Country filter (e.g.: switz,fra,swed)</label>
 			<input type="label" id="label" name="label" value="">
+
+			<label for="popMin">Pop min (M):</label>
+			<input type="number" id="popMin" name="popMin" min="0" max="100000" value=0>
+
+			<label for="popMax">Pop max (M):</label>
+			<input type="number" id="popMax" name="popMax" min="0" max="100000" value=0>
 			<br>
+
 
 			<label for="min">Last min value:</label>
 			<input type="number" id="min" name="min" min="0" max="2000" value=0>
 
 			<label for="max">Last max value:</label>
 			<input type="number" id="max" name="max" min="0" max="2000" value=0>
+
 
 
 			<div class="d-flex justify-content-center">
