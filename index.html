@@ -17,6 +17,7 @@
 		<h1>COVID19 charts based on ECDC numbers</h1>
 		<figure class="highcharts-figure">
 
+
 			<select id="continent" name="continent">
 				<option value="World">World</option>
 				<option selected="1" value="Europe">Europe</option>
@@ -26,6 +27,19 @@
 				<option value="Oceania">Oceania</option>
 				<option value="Other">Other</option>
 			</select>
+
+			<label for="label">Country filter (e.g.: switz,fra,swed)</label>
+			<input type="label" id="label" name="label" value="">
+
+			<label for="popMin">Pop min (Millions):</label>
+			<input type="number" id="popMin" name="popMin" min="0" max="100000" value=0>
+
+			<label for="popMax">Pop max (Millions):</label>
+			<input type="number" id="popMax" name="popMax" min="0" max="100000" value=0>
+			<br>
+
+			<br>
+
 
 			<select id="dimension" name="dimension">
 				<option selected="1" value="Cumulative_number_for_14_days_of_COVID-19_cases_per_100000">Cumulative cases
@@ -42,19 +56,6 @@
 				<option value="cumulatedCasesBycumulatedDeaths">Cumulative deaths / Cumulative cases</option>
 
 			</select>
-
-
-			<br>
-
-			<label for="label">Country filter (e.g.: switz,fra,swed)</label>
-			<input type="label" id="label" name="label" value="">
-
-			<label for="popMin">Pop min (Millions):</label>
-			<input type="number" id="popMin" name="popMin" min="0" max="100000" value=0>
-
-			<label for="popMax">Pop max (Millions):</label>
-			<input type="number" id="popMax" name="popMax" min="0" max="100000" value=0>
-			<br>
 
 
 			<label for="min">Last min value:</label>
