@@ -134,8 +134,8 @@ function getSeriesFromData(continent, dimension) {
 			data: countrySeriesData
 		}
 
-		var min_value = parseInt($("#min").val());
-		var max_value = parseInt($("#max").val());
+		var min_value = parseFloat($("#min").val());
+		var max_value = parseFloat($("#max").val());
 
 		var last_element = countrySeriesData[countrySeriesData.length - 1];
 		if (!last_element) {
