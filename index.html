@@ -1,7 +1,6 @@
 <head>
 	<title>COVID19 charts (cumulative cases, death and cases) based on ECDC numbers</title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-		integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<script src="js/highstock.js"></script>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/lodash.min.js"></script>
@@ -50,10 +49,10 @@
 			<label for="label">Country filter (e.g.: switz,fra,swed)</label>
 			<input type="label" id="label" name="label" value="">
 
-			<label for="popMin">Pop min (M):</label>
+			<label for="popMin">Pop min (Millions):</label>
 			<input type="number" id="popMin" name="popMin" min="0" max="100000" value=0>
 
-			<label for="popMax">Pop max (M):</label>
+			<label for="popMax">Pop max (Millions):</label>
 			<input type="number" id="popMax" name="popMax" min="0" max="100000" value=0>
 			<br>
 

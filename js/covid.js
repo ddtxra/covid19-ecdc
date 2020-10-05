@@ -94,8 +94,8 @@ function getSeriesFromData(continent, dimension) {
 		}
 
 		var dataCountry1 = data.records.filter(r => r.countriesAndTerritories.toLowerCase() == country.toLowerCase());
-		var pop_min = parseInt($("#popMin").val()) * 1000000;
-		var pop_max = parseInt($("#popMax").val()) * 1000000;
+		var pop_min = parseFloat($("#popMin").val()) * 1000000;
+		var pop_max = parseFloat($("#popMax").val()) * 1000000;
 		var pop_value = parseFloat(dataCountry1[0].popData2019);
 		if (pop_min != 0 || pop_max != 0) {
 			if (pop_value == null) return null;
