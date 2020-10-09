@@ -39,34 +39,27 @@ function round(number) {
 var data;
 $.getJSON("ecdc.json", function (_data) {
 	data = _data;
-	var cumulatedCases = 0;
-	var cumulatedDeaths = 0;
-	var currentCountry = null;
-	data.records.reverse().forEach(function (r) {
+	Object.keys(_data).forEach(function (currentCountry) {
+		cumulatedCases = 0;
+		cumulatedDeaths = 0;
+		console.log(currentCountry);
+		_data[currentCountry].records.reverse().forEach(function (r) {
+			if (r.cases != null && parseInt(r.cases) > 0) {
+				cumulatedCases += parseInt(r.cases);
+			}
+			if (r.deaths != null && parseInt(r.deaths) > 0) {
+				cumulatedDeaths += parseInt(r.deaths);
+			}
+			r.cumulatedCases = cumulatedCases;
+			r.cumulatedDeaths = cumulatedDeaths;
+			r.cumulatedDeathsBy1000 = round((cumulatedDeaths / parseInt(_data[currentCountry].pop2019)) * 1000);
+			r.cumulatedCasesBy1000 = round((cumulatedCases / parseInt(_data[currentCountry].pop2019)) * 1000);
+			r["cum14D"] = round(r["cum14D"]);
+			if (cumulatedCases > 0) {
+				r.cumulatedCasesBycumulatedDeaths = round(cumulatedDeaths / cumulatedCases);
+			}
 
-		if (currentCountry == null) {
-			currentCountry = r.country;
-		} else if (currentCountry !== r.country) {
-			cumulatedCases = 0;
-			cumulatedDeaths = 0;
-			currentCountry = r.country;
-		}
-
-		if (r.cases != null && parseInt(r.cases) > 0) {
-			cumulatedCases += parseInt(r.cases);
-		}
-		if (r.deaths != null && parseInt(r.deaths) > 0) {
-			cumulatedDeaths += parseInt(r.deaths);
-		}
-
-		r.cumulatedCases = cumulatedCases;
-		r.cumulatedDeaths = cumulatedDeaths;
-		r.cumulatedDeathsBy1000 = round((cumulatedDeaths / parseInt(r.pop2019)) * 1000);
-		r.cumulatedCasesBy1000 = round((cumulatedCases / parseInt(r.pop2019)) * 1000);
-		r["cum14D"] = round(r["cum14D"]);
-		if (cumulatedCases > 0) {
-			r.cumulatedCasesBycumulatedDeaths = round(cumulatedDeaths / cumulatedCases);
-		}
+		})
 
 	})
 	drawCurrentConfiguration();
@@ -75,8 +68,7 @@ $.getJSON("ecdc.json", function (_data) {
 
 function getSeriesFromData(continent, dimension) {
 
-	var countries_filtered_by_continent = (continent == "World") ? data.records : data.records.filter(r => r.continent == continent);
-	var countries = _.uniq(countries_filtered_by_continent.map(d => d.country));
+	var countries = _.uniq(Object.keys(data));
 	var x_series = [];
 	var current_date = moment("2020-03-01");
 	while (moment().add(1, "day").isAfter(current_date)) {
@@ -92,10 +84,10 @@ function getSeriesFromData(continent, dimension) {
 			}
 		}
 
-		var dataCountry1 = data.records.filter(r => r.country.toLowerCase() == country.toLowerCase());
+		var dataCountry1 = data[country].records;
 		var pop_min = parseFloat($("#popMin").val()) * 1000000;
 		var pop_max = parseFloat($("#popMax").val()) * 1000000;
-		var pop_value = parseFloat(dataCountry1[0].pop2019);
+		var pop_value = parseFloat(data[country].pop2019);
 		if (pop_min != 0 || pop_max != 0) {
 			if (pop_value == null) return null;
 			//no max, but a min
@@ -111,7 +103,6 @@ function getSeriesFromData(continent, dimension) {
 				return null;
 			}
 		}
-
 
 		var countrySeriesData = [];
 		x_series.forEach(function (xs) {
