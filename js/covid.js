@@ -37,7 +37,7 @@ function round(number) {
 }
 
 var data;
-$.getJSON("data.json", function (_data) {
+$.getJSON("ecdc.json", function (_data) {
 	data = _data;
 	var cumulatedCases = 0;
 	var cumulatedDeaths = 0;
@@ -45,11 +45,11 @@ $.getJSON("data.json", function (_data) {
 	data.records.reverse().forEach(function (r) {
 
 		if (currentCountry == null) {
-			currentCountry = r.countriesAndTerritories;
-		} else if (currentCountry !== r.countriesAndTerritories) {
+			currentCountry = r.country;
+		} else if (currentCountry !== r.country) {
 			cumulatedCases = 0;
 			cumulatedDeaths = 0;
-			currentCountry = r.countriesAndTerritories;
+			currentCountry = r.country;
 		}
 
 		if (r.cases != null && parseInt(r.cases) > 0) {
@@ -61,13 +61,12 @@ $.getJSON("data.json", function (_data) {
 
 		r.cumulatedCases = cumulatedCases;
 		r.cumulatedDeaths = cumulatedDeaths;
-		r.cumulatedDeathsBy1000 = round((cumulatedDeaths / parseInt(r.popData2019)) * 1000);
-		r.cumulatedCasesBy1000 = round((cumulatedCases / parseInt(r.popData2019)) * 1000);
-		r["Cumulative_number_for_14_days_of_COVID-19_cases_per_100000"] = round(r["Cumulative_number_for_14_days_of_COVID-19_cases_per_100000"]);
+		r.cumulatedDeathsBy1000 = round((cumulatedDeaths / parseInt(r.pop2019)) * 1000);
+		r.cumulatedCasesBy1000 = round((cumulatedCases / parseInt(r.pop2019)) * 1000);
+		r["cum14D"] = round(r["cum14D"]);
 		if (cumulatedCases > 0) {
 			r.cumulatedCasesBycumulatedDeaths = round(cumulatedDeaths / cumulatedCases);
 		}
-
 
 	})
 	drawCurrentConfiguration();
@@ -76,8 +75,8 @@ $.getJSON("data.json", function (_data) {
 
 function getSeriesFromData(continent, dimension) {
 
-	var countries_filtered_by_continent = (continent == "World") ? data.records : data.records.filter(r => r.continentExp == continent);
-	var countries = _.uniq(countries_filtered_by_continent.map(d => d.countriesAndTerritories));
+	var countries_filtered_by_continent = (continent == "World") ? data.records : data.records.filter(r => r.continent == continent);
+	var countries = _.uniq(countries_filtered_by_continent.map(d => d.country));
 	var x_series = [];
 	var current_date = moment("2020-03-01");
 	while (moment().add(1, "day").isAfter(current_date)) {
@@ -93,10 +92,10 @@ function getSeriesFromData(continent, dimension) {
 			}
 		}
 
-		var dataCountry1 = data.records.filter(r => r.countriesAndTerritories.toLowerCase() == country.toLowerCase());
+		var dataCountry1 = data.records.filter(r => r.country.toLowerCase() == country.toLowerCase());
 		var pop_min = parseFloat($("#popMin").val()) * 1000000;
 		var pop_max = parseFloat($("#popMax").val()) * 1000000;
-		var pop_value = parseFloat(dataCountry1[0].popData2019);
+		var pop_value = parseFloat(dataCountry1[0].pop2019);
 		if (pop_min != 0 || pop_max != 0) {
 			if (pop_value == null) return null;
 			//no max, but a min
@@ -118,7 +117,7 @@ function getSeriesFromData(continent, dimension) {
 		x_series.forEach(function (xs) {
 			var point = null;
 			dataCountry1.forEach(function (d) {
-				if (d.dateRep == xs) {
+				if (d.date == xs) {
 					point = parseFloat(d[key])
 				}
 			})
