@@ -27,9 +27,14 @@ $("#label").change(function () {
 	drawCurrentConfiguration();
 });
 
+var dimensions = ["cum14D", "cumulatedCases", "cumulatedDeaths", "cumulatedCasesBy1000", "cumulatedDeathsBy1000", "cumulatedCasesBycumulatedDeaths", "cases", "deaths"];
+
 function drawCurrentConfiguration() {
 	$("#spinner").show()
-	drawChart(getSeriesFromData($("#continent").val(), $("#dimension").val()));
+	dimensions.forEach(function (dim) {
+		var series = getSeriesFromData($("#continent").val(), dim);
+		drawChart(series, dim);
+	})
 }
 
 function round(number) {
@@ -42,7 +47,6 @@ $.getJSON("ecdc.json", function (_data) {
 	Object.keys(_data).forEach(function (currentCountry) {
 		cumulatedCases = 0;
 		cumulatedDeaths = 0;
-		console.log(currentCountry);
 		_data[currentCountry].records.reverse().forEach(function (r) {
 			if (r.cases != null && parseInt(r.cases) > 0) {
 				cumulatedCases += parseInt(r.cases);
@@ -126,6 +130,9 @@ function getSeriesFromData(continent, dimension) {
 
 		var min_value = parseFloat($("#min").val());
 		var max_value = parseFloat($("#max").val());
+		if (!min_value || !max_value) {
+			return result;
+		}
 
 		var last_element = countrySeriesData[countrySeriesData.length - 1];
 		if (!last_element) {
@@ -166,9 +173,9 @@ function getSeriesFromData(continent, dimension) {
 }
 
 
-function drawChart(series) {
+function drawChart(series, chartName) {
 
-	Highcharts.chart('chart', {
+	Highcharts.chart(chartName, {
 		rangeSelector: {
 			selected: 1
 		},
@@ -182,8 +189,6 @@ function drawChart(series) {
 			type: 'datetime'
 		},
 		yAxis: {
-			//type: 'logarithmic',
-
 			title: {
 				text: 'Number of cases'
 			}
@@ -221,68 +226,5 @@ function drawChart(series) {
 		}
 
 	});
-
 	$("#spinner").hide()
-
 }
-
-
-
-
-/*
-	Highcharts.chart('container', {
-		chart: {
-			zoomType: 'x'
-		},
-		title: {
-			text: 'USD to EUR exchange rate over time'
-		},
-		subtitle: {
-			text: document.ontouchstart === undefined ?
-				'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
-		},
-		xAxis: {
-			type: 'datetime'
-		},
-		yAxis: {
-			title: {
-				text: 'Exchange rate'
-			}
-		},
-		legend: {
-			enabled: false
-		},
-		plotOptions: {
-			area: {
-				fillColor: {
-					linearGradient: {
-						x1: 0,
-						y1: 0,
-						x2: 0,
-						y2: 1
-					},
-					stops: [
-						[0, Highcharts.getOptions().colors[0]],
-						[1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-					]
-				},
-				marker: {
-					radius: 2
-				},
-				lineWidth: 1,
-				states: {
-					hover: {
-						lineWidth: 1
-					}
-				},
-				threshold: null
-			}
-		},
-
-		series: [{
-			type: 'area',
-			name: 'USD to EUR',
-			data: data
-		}]
-	});
-*/

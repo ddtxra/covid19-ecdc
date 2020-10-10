@@ -25,11 +25,11 @@
 
 <body>
 	<div class="container">
-		<h1>COVID19 charts based on ECDC numbers</h1>
+		<h1>COVID19 charts<a
+				href="https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide"
+				target="_blank"><i style="font-size: 16px; margin-left: 20px;">(source: ECDC)</i></a></h1>
 		<figure class="highcharts-figure">
-
-
-			<select id="continent" name="continent">
+			<select hidden id="continent" name="continent">
 				<option value="World">World</option>
 				<option selected="1" value="Europe">Europe</option>
 				<option value="Asia">Asia</option>
@@ -39,52 +39,31 @@
 				<option value="Other">Other</option>
 			</select>
 
-			<label for="label">Country filter (e.g.: switz,fra,swed)</label>
-			<input type="label" id="label" name="label" value="port switz spain france kingdom">
-
-			<label for="popMin">Pop min (Millions):</label>
-			<input type="number" id="popMin" name="popMin" min="0" max="100000" value=0>
-
-			<label for="popMax">Pop max (Millions):</label>
-			<input type="number" id="popMax" name="popMax" min="0" max="100000" value=0>
-			<br>
-
-			<br>
-
-
-			<select id="dimension" name="dimension">
-				<option selected="1" value="cum14D">Cumulative cases
-					for
-					14
-					days per
-					100'000</option>
-				<option value="deaths">Deaths</option>
-				<option value="cases">Cases</option>
-				<option value="cumulatedCases">Cumulative cases</option>
-				<option value="cumulatedDeaths">Cumulative deaths</option>
-				<option value="cumulatedCasesBy1000">Cumulative cases per 1000 habitants</option>
-				<option value="cumulatedDeathsBy1000">Cumulative deaths per 1000 habitants</option>
-				<option value="cumulatedCasesBycumulatedDeaths">Cumulative deaths / Cumulative cases</option>
-
-			</select>
-
-
-			<label for="min">Last min value:</label>
-			<input type="number" id="min" name="min" min="0" max="2000" value=0>
-
-			<label for="max">Last max value:</label>
-			<input type="number" id="max" name="max" min="0" max="2000" value=0>
-
-
+			<div class="form-group">
+				<input type="label" id="label" name="label" value="port switz spain france kingdom">
+			</div>
 
 			<div class="d-flex justify-content-center">
 				<div id="spinner" class="spinner-border" role="status">
 					<span class="sr-only">Loading...</span>
 				</div>
 			</div>
-
-			<div id="chart" style="height: 500px"></div>
-
+			<h2>Cumulative cases for 14 days per 100'000 inhabitants</h2>
+			<div id="cum14D" style="height: 500px"></div>
+			<h2>Cumulated cases by 1000 inhabitants</h2>
+			<div id="cumulatedCasesBy1000" style="height: 500px"></div>
+			<h2>Cumulated deaths by 1000 inhabitants</h2>
+			<div id="cumulatedDeathsBy1000" style="height: 500px"></div>
+			<h2>Cumulated cases</h2>
+			<div id="cumulatedCases" style="height: 500px"></div>
+			<h2>Cumulated deaths</h2>
+			<div id="cumulatedDeaths" style="height: 500px"></div>
+			<h2>Cumulative deaths / Cumulative cases</h2>
+			<div id="cumulatedCasesBycumulatedDeaths" style="height: 500px"></div>
+			<h2>Deaths reported per day</h2>
+			<div id="deaths" style="height: 500px"></div>
+			<h2>Cases reported per day</h2>
+			<div id="cases" style="height: 500px"></div>
 			<p class="pull-left">
 				Source: <a target="_blank"
 					href="https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide">ECDC
