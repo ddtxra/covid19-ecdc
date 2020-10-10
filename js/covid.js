@@ -50,6 +50,12 @@ $("#query").change(function () {
 	drawCurrentConfiguration();
 });
 
+
+$("#goButton").click(function () {
+	setURL();
+	drawCurrentConfiguration();
+});
+
 var getUrlParameter = function getUrlParameter(sParam) {
 	var sPageURL = window.location.search.substring(1),
 		sURLVariables = sPageURL.split('&'),
@@ -81,12 +87,15 @@ function setURL() {
 }
 
 function drawCurrentConfiguration() {
-	$("#spinner").show()
-	config.forEach(function (conf) {
-		var dim = conf.dimension;
-		var series = getSeriesFromData($("#continent").val(), dim);
-		drawChart(series, conf);
-	})
+	$(".spinner").show()
+	$(".card").hide()
+	setTimeout(function () {
+		config.forEach(function (conf) {
+			var dim = conf.dimension;
+			var series = getSeriesFromData($("#continent").val(), dim);
+			drawChart(series, conf);
+		})
+	}, 10)
 }
 
 function round(number) {
@@ -280,5 +289,7 @@ function drawChart(series, conf) {
 		}
 
 	});
-	$("#spinner").hide()
+	$(".spinner").hide()
+	$(".card").show()
+
 }
