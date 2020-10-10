@@ -45,9 +45,40 @@ var config = [{
 	}
 ];
 
-$("#label").change(function () {
+$("#query").change(function () {
+	setURL();
 	drawCurrentConfiguration();
 });
+
+var getUrlParameter = function getUrlParameter(sParam) {
+	var sPageURL = window.location.search.substring(1),
+		sURLVariables = sPageURL.split('&'),
+		sParameterName,
+		i;
+
+	for (i = 0; i < sURLVariables.length; i++) {
+		sParameterName = sURLVariables[i].split('=');
+
+		if (sParameterName[0] === sParam) {
+			return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+		}
+	}
+};
+
+var query = getUrlParameter("q");
+if (query) {
+	$("#query").val(query)
+}
+
+function setURL() {
+	if (history.pushState) {
+		var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?q=' + $("#query").val();
+		window.history.pushState({
+			path: newurl
+		}, '', newurl);
+	}
+
+}
 
 function drawCurrentConfiguration() {
 	$("#spinner").show()
@@ -102,9 +133,9 @@ function getSeriesFromData(continent, dimension) {
 
 	function getDataFor(country, key) {
 
-		var filter_label = $("#label").val();
-		if (filter_label != null && filter_label.length > 1) {
-			if (!country.toLowerCase().match(new RegExp(filter_label.toLowerCase().replace(/\W+/g, "|")))) {
+		var filter_query = $("#query").val();
+		if (filter_query != null && filter_query.length > 1) {
+			if (!country.toLowerCase().match(new RegExp(filter_query.toLowerCase().replace(/\W+/g, "|")))) {
 				return null;
 			}
 		}
