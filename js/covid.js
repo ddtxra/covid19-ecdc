@@ -142,7 +142,7 @@ function getSeriesFromData(continent, dimension) {
 
 	function getDataFor(country, key) {
 
-		var filter_query = $("#query").val();
+		var filter_query = $("#query").val().trim();
 		if (filter_query != null && filter_query.length > 1) {
 			if (!country.toLowerCase().match(new RegExp(filter_query.toLowerCase().replace(/\W+/g, "|")))) {
 				return null;
