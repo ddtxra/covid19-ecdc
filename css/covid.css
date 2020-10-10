@@ -1,0 +1,53 @@
+body {
+	font-family: "MetaPro", Georgia, "Times New Roman", Times, serif;
+	font-weight: bold;
+	line-height: 1.1;
+	color: inherit;
+	background-color: #f7f7f7;
+}
+
+
+h2 {
+	display: block;
+	margin-block-start: 1.33em;
+	margin-block-end: 1.33em;
+	margin-inline-start: 0px;
+	margin-inline-end: 0px;
+	font-weight: bold;
+}
+
+.card {
+	border: 1px solid #ededed;
+	margin-bottom: 30px;
+	border-radius: 10px !important;
+}
+
+.header {
+	padding: 1px;
+	margin: 0px;
+	text-align: center;
+	background: #b4d791;
+	font-size: 25px;
+	border-radius: 10px !important;
+}
+
+.button {
+	background-color: #b4d791;
+	border: 1px solid black;
+	height: 40px;
+	border-radius: 15px;
+	font-size: 16px;
+	width: 5%;
+	cursor: pointer;
+}
+
+
+#query {
+	font-size: 20px;
+	border: 1px solid black;
+	border-radius: 15px;
+	height: 40px;
+	padding: 20px;
+	width: 90%;
+	height: 15px;
+}

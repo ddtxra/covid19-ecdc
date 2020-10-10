@@ -1,6 +1,5 @@
 <head>
 	<title>COVID-19 charts | cumulative cases, death and cases based on ECDC numbers</title>
-	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<script src="js/highstock.js"></script>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/lodash.min.js"></script>
@@ -10,6 +9,8 @@
 	<script src="js/exporting.js"></script>
 	<script src="js/export-data.js"></script>
 	<script src="js/accessibility.js"></script>
+	<link rel="stylesheet" href="css/covid.css">
+
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-180237819-1"></script>
 	<script>
@@ -24,34 +25,35 @@
 </head>
 
 <body>
-	<div style="margin: 20px">
+	<div class="header">
 		<h1>COVID-19 charts<a
 				href="https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide"
 				target="_blank"><i style="font-size: 16px; margin-left: 20px;">(source: ECDC)</i></a></h1>
-		<div class="form-group">
+	</div>
+	<div style="margin: 20px">
+		<div class="card">
 			<input type="label" id="query" name="query" value="port switz spain france kingdom">
+			<button class="button">GO</button>
 		</div>
-		<div class="d-flex justify-content-center">
-			<div id="spinner" class="spinner-border" role="status">
-				<span class="sr-only">Loading...</span>
-			</div>
+		<div id="spinner" class="spinner-border" role="status">
+			<span class="sr-only">Loading...</span>
 		</div>
 		<h2>Cumulative cases for 14 days per 100'000 inhabitants</h2>
-		<div id="cum14D" style="height: 500px"></div>
+		<div class="card" id="cum14D" style="height: 500px"></div>
 		<h2>Cumulative cases per 100'000 inhabitants</h2>
-		<div id="cumulatedCasesBy1000" style="height: 500px"></div>
+		<div class="card" id="cumulatedCasesBy1000" style="height: 500px"></div>
 		<h2>Cumulative deaths per 100'000 inhabitants</h2>
-		<div id="cumulatedDeathsBy1000" style="height: 500px"></div>
+		<div class="card" id="cumulatedDeathsBy1000" style="height: 500px"></div>
 		<h2>Cumulative cases</h2>
-		<div id="cumulatedCases" style="height: 500px"></div>
+		<div class="card" id="cumulatedCases" style="height: 500px"></div>
 		<h2>Cumulative deaths</h2>
-		<div id="cumulatedDeaths" style="height: 500px"></div>
+		<div class="card" id="cumulatedDeaths" style="height: 500px"></div>
 		<h2>Cumulative deaths / Cumulative cases</h2>
-		<div id="cumulatedCasesBycumulatedDeaths" style="height: 500px"></div>
+		<div class="card" id="cumulatedCasesBycumulatedDeaths" style="height: 500px"></div>
 		<h2>Number of cases reported per day</h2>
-		<div id="cases" style="height: 500px"></div>
+		<div class="card" id="cases" style="height: 500px"></div>
 		<h2>Number of deaths reported per day</h2>
-		<div id="deaths" style="height: 500px"></div>
+		<div class="card" id="deaths" style="height: 500px"></div>
 		<p class="pull-left">
 			Source: <a target="_blank"
 				href="https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide">ECDC
