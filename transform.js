@@ -6,7 +6,7 @@ let rawdata = fs.readFileSync('data.json');
 let datapoints = JSON.parse(rawdata);
 
 var countries = {};
-var records = datapoints.records.forEach(p => {
+datapoints.records.forEach(p => {
 	if (!countries[p.countriesAndTerritories]) {
 		countries[p.countriesAndTerritories] = {
 			continent: p.continentExp,

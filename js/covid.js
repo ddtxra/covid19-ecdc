@@ -1,39 +1,60 @@
-$("#continent").change(function () {
-	drawCurrentConfiguration();
-});
+var config = [{
+		dimension: "cum14D",
+		name: "Cumulative cases for 14 days per 100'000 inhabitants",
+		y: "Cumulative cases per 100K"
+	},
+	{
+		dimension: "cumulatedCases",
+		name: "Cumulative cases",
+		y: "Cumulative cases"
+	},
+	{
+		dimension: "cumulatedDeaths",
+		name: "Cumulative deaths",
+		y: "Cumulative deaths"
+	},
+	{
+		dimension: "cumulatedCasesBy1000",
+		name: "Cumulative cases per 100'000 inhabitants",
+		y: "Cumulative cases per 100K"
 
-$("#dimension").change(function () {
-	drawCurrentConfiguration();
-});
 
-$("#min").change(function () {
-	drawCurrentConfiguration();
-});
+	},
+	{
+		dimension: "cumulatedDeathsBy1000",
+		name: "Cumulative deaths per 100'000 inhabitants",
+		y: "Cumulative deaths per 100K"
+	},
+	{
+		dimension: "cumulatedCasesBycumulatedDeaths",
+		name: "Cumulative deaths / Cumulative cases",
+		y: "Ratio cumulative deaths / cases"
 
-$("#max").change(function () {
-	drawCurrentConfiguration();
-});
+	},
+	{
+		dimension: "cases",
+		name: "Number of cases reported per day",
+		y: "Number of cases"
 
-$("#popMin").change(function () {
-	drawCurrentConfiguration();
-});
+	},
+	{
+		dimension: "deaths",
+		name: "Number of deaths reported per day",
+		y: "Number of deaths"
 
-$("#popMax").change(function () {
-	drawCurrentConfiguration();
-});
-
+	}
+];
 
 $("#label").change(function () {
 	drawCurrentConfiguration();
 });
 
-var dimensions = ["cum14D", "cumulatedCases", "cumulatedDeaths", "cumulatedCasesBy1000", "cumulatedDeathsBy1000", "cumulatedCasesBycumulatedDeaths", "cases", "deaths"];
-
 function drawCurrentConfiguration() {
 	$("#spinner").show()
-	dimensions.forEach(function (dim) {
+	config.forEach(function (conf) {
+		var dim = conf.dimension;
 		var series = getSeriesFromData($("#continent").val(), dim);
-		drawChart(series, dim);
+		drawChart(series, conf);
 	})
 }
 
@@ -56,8 +77,8 @@ $.getJSON("ecdc.json", function (_data) {
 			}
 			r.cumulatedCases = cumulatedCases;
 			r.cumulatedDeaths = cumulatedDeaths;
-			r.cumulatedDeathsBy1000 = round((cumulatedDeaths / parseInt(_data[currentCountry].pop2019)) * 1000);
-			r.cumulatedCasesBy1000 = round((cumulatedCases / parseInt(_data[currentCountry].pop2019)) * 1000);
+			r.cumulatedDeathsBy1000 = round((cumulatedDeaths / parseInt(_data[currentCountry].pop2019 / 100000.0)));
+			r.cumulatedCasesBy1000 = round((cumulatedCases / parseInt(_data[currentCountry].pop2019 / 100000.0)));
 			r["cum14D"] = round(r["cum14D"]);
 			if (cumulatedCases > 0) {
 				r.cumulatedCasesBycumulatedDeaths = round(cumulatedDeaths / cumulatedCases);
@@ -173,9 +194,9 @@ function getSeriesFromData(continent, dimension) {
 }
 
 
-function drawChart(series, chartName) {
+function drawChart(series, conf) {
 
-	Highcharts.chart(chartName, {
+	Highcharts.chart(conf.dimension, {
 		rangeSelector: {
 			selected: 1
 		},
@@ -183,21 +204,22 @@ function drawChart(series, chartName) {
 			zoomType: 'x'
 		},
 		title: {
-			text: 'COVID19 ECDC numbers'
+			text: conf.name
 		},
 		xAxis: {
 			type: 'datetime'
 		},
 		yAxis: {
 			title: {
-				text: 'Number of cases'
+				text: conf.y
 			}
 		},
 
 		legend: {
-			layout: 'vertical',
-			align: 'right',
-			verticalAlign: 'middle'
+			align: 'center',
+			verticalAlign: 'bottom',
+			x: 0,
+			y: 0
 		},
 
 		plotOptions: {
