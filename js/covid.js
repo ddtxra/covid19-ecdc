@@ -177,6 +177,7 @@ function getSeriesFromData(continent, dimension) {
 
 		var result = {
 			name: country,
+			color: getColorFromPalette(country),
 			data: countrySeriesData
 		}
 
