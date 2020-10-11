@@ -46,13 +46,11 @@ var config = [{
 ];
 
 $("#query").change(function () {
-	setURL();
 	drawCurrentConfiguration();
 });
 
 
 $("#goButton").click(function () {
-	setURL();
 	drawCurrentConfiguration();
 });
 
@@ -97,6 +95,7 @@ function setURL() {
 }
 
 function drawCurrentConfiguration() {
+	setURL();
 	$(".spinner").show()
 	$(".card").hide()
 	setTimeout(function () {
