@@ -73,9 +73,8 @@ var getUrlParameter = function getUrlParameter(sParam) {
 //Set query from url 
 if (getUrlParameter("q")) {
 	$("#query").val(getUrlParameter("q"))
-}
-//if url is not set (take what is in local storage)
-else if (localStorage && localStorage.q) {
+} else if (localStorage && localStorage.q && localStorage.q.length > 0) {
+	//if url is not set (take what is in local storage)
 	$("#query").val(localStorage.q)
 } else { //use a default that may be interesting
 	$("#query").val("port switz spain france kingdom america, russia australia peru")
@@ -99,9 +98,19 @@ function drawCurrentConfiguration() {
 	$(".spinner").show()
 	$(".card").hide()
 	setTimeout(function () {
+
+		var query = $("#query").val().trim();
+		var continentRegex = /continent:(\w*)/gi;
+		var match = query.match(continentRegex);
+		var continent = "";
+		if (match != null) {
+			continent = match[0].toLowerCase().replace("continent:", "");
+			query = query.replace(/continent:(\w*)/, "");
+		}
+
+
 		config.forEach(function (conf) {
-			var dim = conf.dimension;
-			var series = getSeriesFromData($("#continent").val(), dim);
+			var series = getSeriesFromData(query, conf.dimension, continent);
 			drawChart(series, conf);
 		})
 	}, 10)
@@ -111,13 +120,11 @@ function round(number) {
 	return parseInt(number * 1000) / 1000.0;
 }
 
-var data;
-$.getJSON("ecdc.json", function (_data) {
-	data = _data;
-	Object.keys(_data).forEach(function (currentCountry) {
+function prepareData(_data) {
+	Object.keys(_data).forEach(function (country) {
 		cumulatedCases = 0;
 		cumulatedDeaths = 0;
-		_data[currentCountry].records.reverse().forEach(function (r) {
+		_data[country].records.reverse().forEach(function (r) {
 			if (r.cases != null && parseInt(r.cases) > 0) {
 				cumulatedCases += parseInt(r.cases);
 			}
@@ -126,38 +133,46 @@ $.getJSON("ecdc.json", function (_data) {
 			}
 			r.cumulatedCases = cumulatedCases;
 			r.cumulatedDeaths = cumulatedDeaths;
-			r.cumulatedDeathsBy1000 = round((cumulatedDeaths / parseInt(_data[currentCountry].pop2019 / 100000.0)));
-			r.cumulatedCasesBy1000 = round((cumulatedCases / parseInt(_data[currentCountry].pop2019 / 100000.0)));
+			r.cumulatedDeathsBy1000 = round((cumulatedDeaths / parseInt(_data[country].pop2019 / 100000.0)));
+			r.cumulatedCasesBy1000 = round((cumulatedCases / parseInt(_data[country].pop2019 / 100000.0)));
 			r["cum14D"] = round(r["cum14D"]);
 			if (cumulatedCases > 0) {
 				r.cumulatedCasesBycumulatedDeaths = round(cumulatedDeaths / cumulatedCases);
 			}
-
 		})
-
 	})
+	return _data;
+}
+var data;
+$.getJSON("ecdc.json", function (_data) {
+	data = prepareData(_data);
 	drawCurrentConfiguration();
 });
 
 
-function getSeriesFromData(continent, dimension) {
+function getSeriesFromData(filter_query, dimension, continent) {
 
 	var countries = _.uniq(Object.keys(data));
 	var x_series = [];
-	var current_date = moment("2020-03-01");
-	while (moment().add(1, "day").isAfter(current_date)) {
-		x_series.push(current_date.add(1, "day").format("DD/MM/YYYY"));
+	var start_date = moment("2020-03-01");
+	while (moment().add(1, "day").isAfter(start_date)) {
+		x_series.push(start_date.add(1, "day").format("DD/MM/YYYY"));
 	}
 
 	function getDataFor(country, key) {
 
-		var filter_query = $("#query").val().trim();
+		if (continent && continent.length > 0) {
+			if (data[country].continent.toLowerCase() !== continent.toLowerCase()) {
+				return null;
+			}
+		}
+
+
 		if (filter_query != null && filter_query.length > 1) {
 			if (!country.toLowerCase().match(new RegExp(filter_query.toLowerCase().replace(/\W+/g, "|")))) {
 				return null;
 			}
 		}
-
 		var dataCountry1 = data[country].records;
 		var pop_min = parseFloat($("#popMin").val()) * 1000000;
 		var pop_max = parseFloat($("#popMax").val()) * 1000000;

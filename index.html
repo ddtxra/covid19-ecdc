@@ -32,11 +32,15 @@
 				target="_blank"><i style="font-size: 16px; margin-left: 20px;">(source: ECDC)</i></a></h1>
 	</div>
 	<div style="margin: 20px">
-		<div>
-			<input type="label" id="query" name="query"
+		<div class="input-group mb-3">
+			<input type="text" class="form-control" id="query" name="query"
 				placeholder="Write down any country (e.g. spain france america, russia australia, ...). Empty will take them all"
 				value="">
-			<button id="goButton" class="button">GO</button>
+			<div>
+				<button style="width: 80px;" id="goButton" class="button">GO</button>
+			</div>
+		</div>
+		<div>
 		</div>
 		<div style="margin-top: 0px; font-size: 12px; font-weight: lighter; margin-left: 5px;">
 			<i>Write down any country (e.g.: port switz spain france kingdom america, russia australia). Empty will take
@@ -66,13 +70,24 @@
 		<h2>Number of deaths reported per day</h2>
 		<img class="spinner" src="spinner.gif" />
 		<div class="card" id="deaths" style="height: 500px"></div>
-		<p class="pull-left">
-			Source: <a target="_blank"
+		<p class="pull-left" style="font-size: 12px; margin-top: 100px;">
+			Data source: <a target="_blank"
 				href="https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide">ECDC
-			</a> European Centre for Disease Prevention and Control.&nbsp;&nbsp;&nbsp;&nbsp;
+			</a>
+			Source code: <a target="_blank" href="https://github.com/ddtxra/covid19-ecdc">GitHub
+			</a>
+			<br>
 		</p>
-		<script src="js/colors.js"></script>
-		<script src="js/covid.js"></script>
-
+		<div>
+			<p style="font-size: 6px;">
+				Responsability disclaimer: http://covid-charts.eu/ is not responsible for any errors or omissions, or
+				for the results obtained from the use of this information. All information in this site is provided "as
+				is", with no guarantee of
+				completeness, accuracy, timeliness or of the results obtained from the use of this information....
+			</p>
+		</div>
 	</div>
+
+	<script src="js/colors.js"></script>
+	<script src="js/covid.js"></script>
 </body>
