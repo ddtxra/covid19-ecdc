@@ -56,6 +56,7 @@ $("#goButton").click(function () {
 	drawCurrentConfiguration();
 });
 
+
 var getUrlParameter = function getUrlParameter(sParam) {
 	var sPageURL = window.location.search.substring(1),
 		sURLVariables = sPageURL.split('&'),
@@ -71,9 +72,15 @@ var getUrlParameter = function getUrlParameter(sParam) {
 	}
 };
 
-var query = getUrlParameter("q");
-if (query) {
-	$("#query").val(query)
+//Set query from url 
+if (getUrlParameter("q")) {
+	$("#query").val(getUrlParameter("q"))
+}
+//if url is not set (take what is in local storage)
+else if (localStorage && localStorage.q) {
+	$("#query").val(localStorage.q)
+} else { //use a default that may be interesting
+	$("#query").val("port switz spain france kingdom america, russia australia peru")
 }
 
 function setURL() {
@@ -82,6 +89,9 @@ function setURL() {
 		window.history.pushState({
 			path: newurl
 		}, '', newurl);
+	}
+	if (localStorage) {
+		localStorage.q = $("#query").val();
 	}
 
 }

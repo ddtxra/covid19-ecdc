@@ -1,11 +1,12 @@
 <head>
 	<title>COVID-19 charts | cumulative cases and deaths based on ECDC numbers</title>
-	<script src="js/highstock.js"></script>
+	<!-- CSS only -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<!-- JS, Popper.js, and jQuery -->
 	<script src="js/jquery.min.js"></script>
 	<script src="js/lodash.min.js"></script>
 	<script src="js/moment.min.js"></script>
 	<script src="js/highcharts.js"></script>
-	<script src="js/data.js"></script>
 	<script src="js/exporting.js"></script>
 	<script src="js/export-data.js"></script>
 	<script src="js/accessibility.js"></script>
@@ -34,7 +35,7 @@
 		<div>
 			<input type="label" id="query" name="query"
 				placeholder="Write down any country (e.g. spain france america, russia australia, ...). Empty will take them all"
-				value="port switz spain france kingdom america, russia australia">
+				value="">
 			<button id="goButton" class="button">GO</button>
 		</div>
 		<div style="margin-top: 0px; font-size: 12px; font-weight: lighter; margin-left: 5px;">
