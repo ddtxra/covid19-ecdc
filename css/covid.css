@@ -6,6 +6,9 @@ body {
 	background-color: #f7f7f7;
 }
 
+.spinner {
+	height: 500px;
+}
 
 h2 {
 	display: block;
@@ -20,6 +23,7 @@ h2 {
 	border: 1px solid #ededed;
 	margin-bottom: 30px;
 	border-radius: 10px !important;
+	height: 500px;
 }
 
 .header {
@@ -28,16 +32,16 @@ h2 {
 	text-align: center;
 	background: #b4d791;
 	font-size: 25px;
-	border-radius: 10px !important;
 }
 
 .button {
 	background-color: #b4d791;
 	border: 1px solid black;
 	height: 40px;
-	border-radius: 15px;
 	font-size: 16px;
-	width: 5%;
+	width: 10%;
+	padding: 10px;
+	margin-left: 5px;
 	cursor: pointer;
 }
 
@@ -45,9 +49,8 @@ h2 {
 #query {
 	font-size: 20px;
 	border: 1px solid black;
-	border-radius: 15px;
 	height: 40px;
-	padding: 20px;
-	width: 90%;
+	padding: 19px;
+	width: 80%;
 	height: 15px;
 }

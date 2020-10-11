@@ -1,3 +1,4 @@
+var exclude_negative = false;
 var config = [{
 		dimension: "cum14D",
 		name: "Cumulative cases for 14 days per 100'000 inhabitants",
@@ -45,15 +46,6 @@ var config = [{
 	}
 ];
 
-$("#query").change(function () {
-	drawCurrentConfiguration();
-});
-
-
-$("#goButton").click(function () {
-	drawCurrentConfiguration();
-});
-
 
 var getUrlParameter = function getUrlParameter(sParam) {
 	var sPageURL = window.location.search.substring(1),
@@ -70,6 +62,8 @@ var getUrlParameter = function getUrlParameter(sParam) {
 	}
 };
 
+
+
 //Set query from url 
 if (getUrlParameter("q")) {
 	$("#query").val(getUrlParameter("q"))
@@ -80,9 +74,35 @@ if (getUrlParameter("q")) {
 	$("#query").val("port switz spain france kingdom america, russia australia peru")
 }
 
+if (getUrlParameter("excludeNegative")) {
+	if (getUrlParameter("excludeNegative") == "on") {
+		exclude_negative = true;
+	} else exclude_negative = false;
+} else exclude_negative = false;
+
+$("#query").change(function () {
+	drawCurrentConfiguration();
+});
+
+/*
+$("#excludeNegative").change(function () {
+	drawCurrentConfiguration();
+});
+*/
+
+$("#goButton").click(function () {
+	drawCurrentConfiguration();
+});
+
+
 function setURL() {
+	var exclude_url = "";
+	if (getUrlParameter("excludeNegative")) {
+		exclude_url += ("&excludeNegative=" + getUrlParameter("excludeNegative"))
+	}
+
 	if (history.pushState) {
-		var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?q=' + $("#query").val();
+		var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?q=' + $("#query").val() + exclude_url;
 		window.history.pushState({
 			path: newurl
 		}, '', newurl);
@@ -90,7 +110,6 @@ function setURL() {
 	if (localStorage) {
 		localStorage.q = $("#query").val();
 	}
-
 }
 
 function drawCurrentConfiguration() {
@@ -98,6 +117,13 @@ function drawCurrentConfiguration() {
 	$(".spinner").show()
 	$(".card").hide()
 	setTimeout(function () {
+
+		/*
+		if ($("#excludeNegative:checked").val()) {
+			exclude_negative = true;
+		} else {
+			exclude_negative = false;
+		}*/
 
 		var query = $("#query").val().trim();
 		var continentRegex = /continent:(\w*)/gi;
@@ -125,10 +151,10 @@ function prepareData(_data) {
 		cumulatedCases = 0;
 		cumulatedDeaths = 0;
 		_data[country].records.reverse().forEach(function (r) {
-			if (r.cases != null && parseInt(r.cases) > 0) {
+			if (r.cases != null && (!exclude_negative || parseInt(r.cases) >= 0)) {
 				cumulatedCases += parseInt(r.cases);
 			}
-			if (r.deaths != null && parseInt(r.deaths) > 0) {
+			if (r.deaths != null && (!exclude_negative || parseInt(r.cases) >= 0)) {
 				cumulatedDeaths += parseInt(r.deaths);
 			}
 			r.cumulatedCases = cumulatedCases;
@@ -201,11 +227,13 @@ function getSeriesFromData(filter_query, dimension, continent) {
 					point = parseFloat(d[key])
 				}
 			})
-			if (point != null && point >= 0)
+			if (point != null && (!exclude_negative || point >= 0)) {
 				countrySeriesData.push({
 					x: moment(xs + " 12:00:00", "DD/MM/YYYY hh:mm:ss").valueOf(),
 					y: point
 				})
+
+			}
 		})
 
 		var result = {
@@ -265,8 +293,12 @@ function drawChart(series, conf) {
 		rangeSelector: {
 			selected: 1
 		},
+
 		chart: {
-			zoomType: 'x'
+			zoomType: 'x',
+			style: {
+				fontFamily: 'Courier New'
+			}
 		},
 		title: {
 			text: conf.name
@@ -317,3 +349,8 @@ function drawChart(series, conf) {
 	$(".card").show()
 
 }
+
+
+$(document).ready(function () {
+	$('[data-toggle="tooltip"]').tooltip();
+});

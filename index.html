@@ -1,9 +1,10 @@
 <head>
 	<title>COVID-19 charts | cumulative cases and deaths based on ECDC numbers</title>
+	<script src="js/jquery.min.js"></script>
 	<!-- CSS only -->
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<!-- JS, Popper.js, and jQuery -->
-	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
 	<script src="js/lodash.min.js"></script>
 	<script src="js/moment.min.js"></script>
 	<script src="js/highcharts.js"></script>
@@ -32,6 +33,12 @@
 				target="_blank"><i style="font-size: 16px; margin-left: 20px;">(source: ECDC)</i></a></h1>
 	</div>
 	<div style="margin: 20px">
+		<div style="margin-top: 0px; font-size: 12px; font-weight: lighter; margin-left: 5px;">
+			<i>Type <a href="https://covid-charts.eu/?q=spain%20france%20america,%20russia%20australia,%20peru">one or
+					multiple countries</a>, see the countries for a <a
+					href="https://covid-charts.eu/?q=continent:europe">continent:europe</a>, or leave empty to see all
+				countries.</i>
+		</div>
 		<div class="input-group mb-3">
 			<input type="text" class="form-control" id="query" name="query"
 				placeholder="Type any country (e.g. spain france america, russia australia, ...). Or see countries for a continent: continent:europe. Or leave empty to take all countries"
@@ -39,39 +46,42 @@
 			<div>
 				<button style="width: 80px;" id="goButton" class="button">GO</button>
 			</div>
-		</div>
-		<div>
-		</div>
-		<div style="margin-top: 0px; font-size: 12px; font-weight: lighter; margin-left: 5px;">
-			<i>Type <a href="https://covid-charts.eu/?q=spain%20france%20america,%20russia%20australia,%20peru">one or
-					multiple countries </a>, see the countries for a continent:
-				<a href="https://covid-charts.eu/?q=continent:europe">continent:europe.</a> Or leave empty to get all
-				countries.</i>
+			<!--
+			<div class="form-check">
+				<input data-toggle="tooltip"
+					title="Some countries report negative numbers. Click on this option to exlude those numbers."
+					type="checkbox" class="form-check-input t" id="excludeNegative">
+				<label data-toggle="tooltip"
+					title="Some countries report negative numbers. Click on this option to exlude those numbers."
+					class="form-check-label  pull-right" for="exampleCheck1">Exclude negative reported
+					data</label>
+			</div>
+			-->
 		</div>
 		<h2>Cumulative cases for 14 days per 100'000 inhabitants</h2>
-		<img class="spinner" src="spinner.gif" />
-		<div class="card" id="cum14D" style="height: 500px"></div>
+		<div class="spinner"><img src="spinner.gif" /></div>
+		<div class="card" id="cum14D"></div>
 		<h2>Cumulative cases per 100'000 inhabitants</h2>
-		<img class="spinner" src="spinner.gif" />
-		<div class="card" id="cumulatedCasesBy1000" style="height: 500px"></div>
+		<div class="spinner"><img src="spinner.gif" /></div>
+		<div class="card" id="cumulatedCasesBy1000"></div>
 		<h2>Cumulative deaths per 100'000 inhabitants</h2>
-		<img class="spinner" src="spinner.gif" />
-		<div class="card" id="cumulatedDeathsBy1000" style="height: 500px"></div>
+		<div class="spinner"><img src="spinner.gif" /></div>
+		<div class="card" id="cumulatedDeathsBy1000"></div>
 		<h2>Cumulative cases</h2>
-		<img class="spinner" src="spinner.gif" />
-		<div class="card" id="cumulatedCases" style="height: 500px"></div>
+		<div class="spinner"><img src="spinner.gif" /></div>
+		<div class="card" id="cumulatedCases"></div>
 		<h2>Cumulative deaths</h2>
-		<img class="spinner" src="spinner.gif" />
-		<div class="card" id="cumulatedDeaths" style="height: 500px"></div>
+		<div class="spinner"><img src="spinner.gif" /></div>
+		<div class="card" id="cumulatedDeaths"></div>
 		<h2>Cumulative deaths / Cumulative cases</h2>
-		<img class="spinner" src="spinner.gif" />
-		<div class="card" id="cumulatedCasesBycumulatedDeaths" style="height: 500px"></div>
+		<div class="spinner"><img src="spinner.gif" /></div>
+		<div class="card" id="cumulatedCasesBycumulatedDeaths"></div>
 		<h2>Number of cases reported per day</h2>
-		<img class="spinner" src="spinner.gif" />
-		<div class="card" id="cases" style="height: 500px"></div>
+		<div class="spinner"><img src="spinner.gif" /></div>
+		<div class="card" id="cases"></div>
 		<h2>Number of deaths reported per day</h2>
-		<img class="spinner" src="spinner.gif" />
-		<div class="card" id="deaths" style="height: 500px"></div>
+		<div class="spinner"><img src="spinner.gif" /></div>
+		<div class="card" id="deaths"></div>
 		<p class="pull-left"
 			style="font-size: 12px; font-family: 'Courier New', Courier, monospace; margin-top: 100px;">
 			Data: <a target="_blank"
