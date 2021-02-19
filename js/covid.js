@@ -27,12 +27,6 @@ var config = [{
 		y: "Cumulative deaths per 100K"
 	},
 	{
-		dimension: "cumulatedCasesBycumulatedDeaths",
-		name: "Cumulative deaths / Cumulative cases",
-		y: "Ratio cumulative deaths / cases"
-
-	},
-	{
 		dimension: "cases",
 		name: "Number of cases reported per day",
 		y: "Number of cases"
@@ -153,8 +147,8 @@ function prepareData(_data) {
 		_data[country].records.reverse().forEach(function (r) {
 			r.cumulative_cases = r.cumulative_cases ? r.cumulative_cases : 0;
 			r.cumulative_deaths = r.cumulative_deaths ? r.cumulative_deaths : 0;
-			r.cumulatedDeathsBy1000 = r.cumulative_deaths ? (r.cumulative_deaths / (country.pop2019 /100000)) : 0;
-			r.cumulatedCasesBy1000 = r.cumulative_cases ? (r.cumulative_cases / (country.pop2019 /100000)) : 0;
+			r.cumulatedDeathsBy1000 = r.cumulative_deaths ? (r.cumulative_deaths / (_data[country].pop2019 /100000)) : 0;
+			r.cumulatedCasesBy1000 = r.cumulative_cases ? (r.cumulative_cases / (_data[country].pop2019 /100000)) : 0;
 			r["cum14D"] = round(r["cum14D"]);
 		})
 	})
