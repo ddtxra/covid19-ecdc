@@ -5,12 +5,12 @@ var config = [{
 		y: "Cumulative cases per 100K"
 	},
 	{
-		dimension: "cumulatedCases",
+		dimension: "cumulative_cases",
 		name: "Cumulative cases",
 		y: "Cumulative cases"
 	},
 	{
-		dimension: "cumulatedDeaths",
+		dimension: "cumulative_deaths",
 		name: "Cumulative deaths",
 		y: "Cumulative deaths"
 	},
@@ -137,6 +137,8 @@ function drawCurrentConfiguration() {
 
 		config.forEach(function (conf) {
 			var series = getSeriesFromData(query, conf.dimension, continent);
+			console.log(conf)
+			console.log(series)
 			drawChart(series, conf);
 		})
 	}, 10)
@@ -148,23 +150,12 @@ function round(number) {
 
 function prepareData(_data) {
 	Object.keys(_data).forEach(function (country) {
-		cumulatedCases = 0;
-		cumulatedDeaths = 0;
 		_data[country].records.reverse().forEach(function (r) {
-			if (r.cases != null && (!exclude_negative || parseInt(r.cases) >= 0)) {
-				cumulatedCases += parseInt(r.cases);
-			}
-			if (r.deaths != null && (!exclude_negative || parseInt(r.cases) >= 0)) {
-				cumulatedDeaths += parseInt(r.deaths);
-			}
-			r.cumulatedCases = cumulatedCases;
-			r.cumulatedDeaths = cumulatedDeaths;
-			r.cumulatedDeathsBy1000 = round((cumulatedDeaths / parseInt(_data[country].pop2019 / 100000.0)));
-			r.cumulatedCasesBy1000 = round((cumulatedCases / parseInt(_data[country].pop2019 / 100000.0)));
+			r.cumulative_cases = r.cumulative_cases ? r.cumulative_cases : 0;
+			r.cumulative_deaths = r.cumulative_deaths ? r.cumulative_deaths : 0;
+			r.cumulatedDeathsBy1000 = r.cumulative_deaths ? (r.cumulative_deaths / (country.pop2019 /100000)) : 0;
+			r.cumulatedCasesBy1000 = r.cumulative_cases ? (r.cumulative_cases / (country.pop2019 /100000)) : 0;
 			r["cum14D"] = round(r["cum14D"]);
-			if (cumulatedCases > 0) {
-				r.cumulatedCasesBycumulatedDeaths = round(cumulatedDeaths / cumulatedCases);
-			}
 		})
 	})
 	return _data;
