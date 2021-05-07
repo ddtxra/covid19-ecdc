@@ -1,4 +1,4 @@
-var exclude_negative = false;
+var include_since_beginning = false;
 var config = [{
 		dimension: "cum14D",
 		name: "Cumulative cases for 14 days per 100'000 inhabitants",
@@ -68,21 +68,21 @@ if (getUrlParameter("q")) {
 	$("#query").val("port switz spain france kingdom america, russia australia peru")
 }
 
-if (getUrlParameter("excludeNegative")) {
-	if (getUrlParameter("excludeNegative") == "on") {
-		exclude_negative = true;
-	} else exclude_negative = false;
-} else exclude_negative = false;
+if (getUrlParameter("includeSinceBeginning")) {
+	if (getUrlParameter("includeSinceBeginning") == "on") {
+		include_since_beginning = true;
+	} else include_since_beginning = false;
+} else include_since_beginning = false;
 
 $("#query").change(function () {
 	drawCurrentConfiguration();
 });
 
-/*
-$("#excludeNegative").change(function () {
+
+$("#includeSinceBeginning").change(function () {
 	drawCurrentConfiguration();
 });
-*/
+
 
 $("#goButton").click(function () {
 	drawCurrentConfiguration();
@@ -91,8 +91,8 @@ $("#goButton").click(function () {
 
 function setURL() {
 	var exclude_url = "";
-	if (getUrlParameter("excludeNegative")) {
-		exclude_url += ("&excludeNegative=" + getUrlParameter("excludeNegative"))
+	if (getUrlParameter("includeSinceBeginning")) {
+		exclude_url += ("&includeSinceBeginning=" + getUrlParameter("includeSinceBeginning"))
 	}
 
 	if (history.pushState) {
@@ -112,12 +112,12 @@ function drawCurrentConfiguration() {
 	$(".card").hide()
 	setTimeout(function () {
 
-		/*
-		if ($("#excludeNegative:checked").val()) {
-			exclude_negative = true;
+		
+		if ($("#includeSinceBeginning:checked").val()) {
+			include_since_beginning = true;
 		} else {
-			exclude_negative = false;
-		}*/
+			include_since_beginning = false;
+		}
 
 		var query = $("#query").val().trim();
 		var continentRegex = /continent:(\w*)/gi;
@@ -157,6 +157,7 @@ function prepareData(_data) {
 var data;
 $.getJSON("ecdc.json", function (_data) {
 	data = prepareData(_data);
+	console.log(data);
 	drawCurrentConfiguration();
 });
 
@@ -165,7 +166,11 @@ function getSeriesFromData(filter_query, dimension, continent) {
 
 	var countries = _.uniq(Object.keys(data));
 	var x_series = [];
-	var start_date = moment("2020-03-01");
+	if(include_since_beginning){
+		var start_date = moment("2020-03-01");
+	}else {
+		var start_date = moment().add(-20, "week");
+	}
 	while (moment().add(1, "day").isAfter(start_date)) {
 		x_series.push(start_date.add(1, "day").format("DD/MM/YYYY"));
 	}
@@ -212,7 +217,7 @@ function getSeriesFromData(filter_query, dimension, continent) {
 					point = parseFloat(d[key])
 				}
 			})
-			if (point != null && (!exclude_negative || point >= 0)) {
+			if (point != null && (point >= 0)) {
 				countrySeriesData.push({
 					x: moment(xs + " 12:00:00", "DD/MM/YYYY hh:mm:ss").valueOf(),
 					y: point
@@ -278,7 +283,6 @@ function drawChart(series, conf) {
 		rangeSelector: {
 			selected: 1
 		},
-
 		chart: {
 			zoomType: 'x',
 			style: {
